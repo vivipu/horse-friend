@@ -1,17 +1,5 @@
 extends KinematicBody2D
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
-
-# Called when the node enters the scene tree for the first time.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
 enum {
 	IDLE,
 	WANDER
@@ -24,7 +12,9 @@ var prev_state = "none"
 var velocity = Vector2.ZERO
 var state = IDLE
 var rng = RandomNumberGenerator.new()
+var rng2 = RandomNumberGenerator.new()
 var which_way = 0
+var color = 0
 
 const ACCELERATION = 800
 const MAX_SPEED = 100
@@ -34,10 +24,65 @@ onready var start_position = global_position
 onready var target_position = global_position
 
 func _ready():
-	randomize()
+	rng.randomize()
+	rng2.randomize()
 	size.x -= 300
 	size.y -= 300
+	color = rng2.randi_range(1,5)
 
+func lets_move(movement): #there has to be a better way to do this
+	match color:
+		1:
+			match movement:
+				"right":
+					get_node("Horse").play("blright")
+				"left":
+					get_node("Horse").play("blleft")
+				"up":
+					get_node("Horse").play("blup")
+				"down":
+					get_node("Horse").play("bldown")
+		2:
+			match movement:
+				"right":
+					get_node("Horse").play("brright")
+				"left":
+					get_node("Horse").play("brleft")
+				"up":
+					get_node("Horse").play("brup")
+				"down":
+					get_node("Horse").play("brdown")
+		3:
+			match movement:
+				"right":
+					get_node("Horse").play("goright")
+				"left":
+					get_node("Horse").play("goleft")
+				"up":
+					get_node("Horse").play("goup")
+				"down":
+					get_node("Horse").play("godown")
+		4:
+			match movement:
+				"right":
+					get_node("Horse").play("grright")
+				"left":
+					get_node("Horse").play("grleft")
+				"up":
+					get_node("Horse").play("grup")
+				"down":
+					get_node("Horse").play("grdown")
+		5,_:
+			match movement:
+				"right":
+					get_node("Horse").play("wright")
+				"left":
+					get_node("Horse").play("wleft")
+				"up":
+					get_node("Horse").play("wup")
+				"down":
+					get_node("Horse").play("wdown")
+		
 func update_target_position():
 	which_way = rng.randi_range(1, 100)
 	var target_vector = Vector2.ZERO
@@ -54,25 +99,23 @@ func is_at_target_position():
 func _physics_process(delta):
 	match state:
 		IDLE:
-			state = WANDER #hi ian!
+			state = WANDER
 			# Maybe wait for X seconds with a timer before moving on
-			yield(get_tree().create_timer(0.01), "timeout")
+			yield(get_tree().create_timer(0.05), "timeout")
 			update_target_position()
 
 		WANDER:
 			accelerate_to_point(target_position, ACCELERATION * delta)
 			if which_way % 2 == 0:
 				if target_position.y <= global_position.y:
-					get_node("Horse").play("up")
+					lets_move("up")
 				else:
-					get_node("Horse").play("down")
+					lets_move("down")
 			else:
 				if target_position.x >= global_position.x:
-					get_node("Horse").play("right")
-					prev_state = "right"
+					lets_move("right")
 				else:
-					get_node("Horse").play("left")
-					prev_state = "left"
+					lets_move("left")
 
 			if is_at_target_position():
 				state = IDLE
