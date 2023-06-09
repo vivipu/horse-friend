@@ -6,6 +6,7 @@ a silly horse desktop buddy!
 # known issues
 - sometimes horsey gets stuck in a loop of going back and forth to the same location. temporary fix: restart the program
 - tested it on a Windows machine and horsey doesn't appear on screen at all??? not sure if this is a recurring issue or just a one-off incident.
+- has some funky compositing issues on openbox + compton. not program breaking but kinda ugly
 
 # ideas for future releases
 - let horsey be idle sometimes (random intervals)
